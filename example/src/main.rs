@@ -3,12 +3,12 @@ use std::env;
 use anyhow::Result;
 
 use jupiter_swap_api_client::{
-    quote::QuoteRequest, swap::SwapRequest, transaction_config::TransactionConfig,
-    JupiterSwapApiClient,
+    JupiterSwapApiClient, quote::QuoteRequest, swap::SwapRequest,
+    transaction_config::TransactionConfig,
 };
 use solana_client::nonblocking::rpc_client::RpcClient;
-use solana_sdk::{pubkey, transaction::VersionedTransaction};
-use solana_sdk::{pubkey::Pubkey, signature::NullSigner};
+use solana_client::rpc_response::transaction::versioned::VersionedTransaction;
+use solana_sdk::{pubkey, pubkey::Pubkey, signature::NullSigner};
 
 // --- CONSTANTS: MINT ADDRESSES AND WALLET ---
 
@@ -22,7 +22,8 @@ pub const TEST_WALLET: Pubkey = pubkey!("2AQdpHJ2JpcEgPiATUXjQxA8QmafFegfQwSLWSp
 // Use anyhow::Result for ergonomic error handling throughout the asynchronous main function.
 async fn main() -> Result<()> {
     // Determine the Jupiter API base URL, falling back to the standard endpoint.
-    let api_base_url = env::var("API_BASE_URL").unwrap_or_else(|_| "https://api.jup.ag/swap/v1".into());
+    let api_base_url =
+        env::var("API_BASE_URL").unwrap_or_else(|_| "https://api.jup.ag/swap/v1".into());
     let api_key = env::var("API_KEY").expect("API_KEY must be specified to use Jupiter API".into());
     println!("Using Jupiter base url: {}", api_base_url);
 
